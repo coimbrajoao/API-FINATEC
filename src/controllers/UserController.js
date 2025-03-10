@@ -40,7 +40,7 @@ const { existsOrError, validateEmail } = require('../validation/validation')
             }
 
             const hash = await encryptPassword(password);
-            delete confirmedPassword;
+        
             await repository.CreateUser({ name, email, password: hash, admin, cpf });
             return res.status(201).json({ message: "User created successfully" });
         
@@ -81,6 +81,7 @@ exports.put =  async (req, res) =>{
             if (cpf) updatedFields.cpf = cpf;
 
             await repository.UpdateUser(id, updatedFields);
+
 
             return res.status(201).json({ message: "User updated successfully" });
         
@@ -148,7 +149,7 @@ exports.getAll = async (req, res) =>{
             }
         });
 
-        return res.status(200).send({curretPage: page, totalPage: Math.ceil(users.length / limit), users: userResponse});
+        return res.status(200).send({currentPage: page, totalPage: Math.ceil(users.length / limit), users: userResponse});
         
     } catch (err) {
 
