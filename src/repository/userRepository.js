@@ -13,8 +13,14 @@ class UserRepository {
     async GetUserByEmail(email) {
         return await User.findOne({ where: { email } });
     }
-    async GetAllUsers() {
-        return await User.findAll({ attributes: { where: { deletedAt: null  } } });
+    async GetAllUsers(offset, limit) {
+        const parsedOffset = Number(offset) || 0;
+        const parsedLimit = Number(limit) || 10; // Define um valor padrão
+        return await User.findAndCountAll({
+            where: { deletedAt: null },
+            offset: parsedOffset,
+            limit: parsedLimit
+        });
     }
     async GetUserById(id) {
         return (await User.findByPk(id));

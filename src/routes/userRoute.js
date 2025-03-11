@@ -5,12 +5,11 @@ const adminValidator = require('../middleware/adminMiddleware');
 
 const router = express.Router();
 router.use(authmiddleware.authenticate());
-router.use(adminValidator.admin());
 
-router.post('/',UserController.post);
+router.post('/',adminValidator.admin(),UserController.post);
 router.put('/:id',UserController.put);
 router.get('/:id',UserController.getById);
-router.get('/',UserController.getAll);
-router.delete('/:id',UserController.delete);
+router.get('/',adminValidator.admin(),UserController.getAll);
+router.delete('/:id',adminValidator.admin(),UserController.delete);
 
 module.exports = router;

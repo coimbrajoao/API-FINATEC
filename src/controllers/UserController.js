@@ -1,33 +1,34 @@
 const encryptPassword = require('../services/encryptPassword');
 const repository = require('../repository/userRepository');
-const { existsOrError, validateEmail } = require('../validation/validation')
+const { existsOrError, validateEmail } = require('../validation/validation');
+const { parse } = require('dotenv');
    
  exports.post= async (req, res) =>{
 
         const { name, email, password, confirmedPassword, admin, cpf } = req.body;
 
-        const emailValid = await repository.GetUserByEmail(email);
-        if(emailValid){
-            return res.status(400).json({ error: "Email already exists" });
-        }
-
+        
         try {
-
+            
             const fields = { name, email, password, confirmedPassword,cpf };
             for (const field in fields) {
                 existsOrError(fields[field], `The field ${field} is required`);
             }
             validateEmail(email);
-
+            
         } catch (msg) {
-
+            
             return res.status(400).json({ error: msg });
-        
+            
         }
-
+        
         if (password !== confirmedPassword) {
-
+            
             return res.status(400).json({ error: "The passwords do not match" });
+        }
+        const emailValid = await repository.GetUserByEmail(email);
+        if(emailValid){
+            return res.status(400).json({ error: "Email already exists" });
         }
 
         try {
@@ -36,7 +37,7 @@ const { existsOrError, validateEmail } = require('../validation/validation')
 
             if (user) {
 
-                return res.status(400).json({ error: "User with this CPF already exists" });
+                return res.status(409).json({ error: "User with this CPF already exists" });
             }
 
             const hash = await encryptPassword(password);
@@ -69,7 +70,7 @@ exports.put =  async (req, res) =>{
 
             if (!user) {
 
-                return res.status(400).json({ error: "User not found" });
+                return res.status(404).json({ error: "User not found" });
             }
             
             const updatedFields = {};
@@ -105,7 +106,7 @@ exports.put =  async (req, res) =>{
 
         if (!user) {
 
-            return res.status(400).json({ error: "User not found" });
+            return res.status(404).json({ error: "User not found" });
         }
 
         const userResponse = {
@@ -127,34 +128,37 @@ exports.put =  async (req, res) =>{
 
 
 exports.getAll = async (req, res) =>{
-    const page = +req.query.page || 1;
-    const limit = +req.query.limit || 10;
+    const { page = 1, limit = 10 } = req.query;
+
+    const paserdLimit = parseInt(limit);
+
+    if (isNaN(page) || isNaN(limit) || page <= 0 || limit <= 0) {
+        return res.status(400).json({ error: "Invalid page or limit parameters" });
+    }
+
     const offset = (page - 1) * limit;
 
-    try {
-        const users = await repository.GetAllUsers();
+    const parsedoffset = parseInt(offset);
 
-        if (!users || users.length === 0) {
+    if (isNaN(parsedoffset) || parsedoffset < 0) {
+        return res.status(400).json({ error: "Invalid offset parameter" });
+    }
+
+    try {
+        const {count, rows} = await repository.GetAllUsers({parsedoffset, paserdLimit});
+
+        if (!rows || rows.length === 0) {
 
             return res.status(400).json({ error: "No users found" });
         }
 
-        const userResponse = users.map(user => {
-            return {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                cpf: user.cpf,
-                admin: user.admin
-            }
-        });
 
-        return res.status(200).send({currentPage: page, totalPage: Math.ceil(users.length / limit), users: userResponse});
+        return res.status(200).send({ currentPage: parseInt(page), totalPage: Math.ceil(count / limit), users: rows });
         
     } catch (err) {
 
         console.log(err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        return res.status(500).json({ error: "Internal Server Error", details: err });
 
     }
 }
@@ -171,7 +175,7 @@ exports.delete = async (req, res) =>{
 
         if (!user) {
 
-            return res.status(400).json({ error: "User not found" });
+            return res.status(404).json({ error: "User not found" });
         }
 
         const updatedFields = { deletedAt: new Date() };
@@ -179,7 +183,7 @@ exports.delete = async (req, res) =>{
         
         if (!updatedUser) {
 
-            return res.status(400).json({ error: "Error deleting user" });
+            return res.status(404).json({ error: "Error deleting user" });
         }
 
         return res.status(200).json({ message: "User deleted successfully" });

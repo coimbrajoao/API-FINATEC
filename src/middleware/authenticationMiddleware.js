@@ -29,6 +29,15 @@ const strategy = new Strategy(params, (payload, done) => {
 
 passport.use(strategy);
 
-module.exports = {
-    authenticate: () => passport.authenticate('jwt', { session: false })
+module.exports.authenticate=() => (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user) => {
+        if (err) {
+            return res.status(401).json({ message: err.message });
+        }
+        if (!user) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        req.user = user;
+        return next();
+    })(req, res, next);
 };
