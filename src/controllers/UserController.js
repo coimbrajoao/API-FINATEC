@@ -7,13 +7,16 @@ const { parse } = require('dotenv');
 
         const { name, email, password, confirmedPassword, admin, cpf } = req.body;
 
-        
+        const isAdmin = req.user && req.user.admin;
+
         try {
             
             const fields = { name, email, password, confirmedPassword,cpf };
+
             for (const field in fields) {
                 existsOrError(fields[field], `The field ${field} is required`);
             }
+
             validateEmail(email);
             
         } catch (msg) {
@@ -42,7 +45,7 @@ const { parse } = require('dotenv');
 
             const hash = await encryptPassword(password);
         
-            await repository.CreateUser({ name, email, password: hash, admin, cpf });
+            await repository.CreateUser({ name, email, password: hash, admin : isAdmin ? admin : false, cpf });
             return res.status(201).json({ message: "User created successfully" });
         
         } catch (err) {

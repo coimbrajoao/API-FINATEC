@@ -4,10 +4,13 @@ const app = express();
 const userRouter = require('./routes/userRoute');
 const authRouter = require('./routes/authRote');
 const passport = require('passport');
+const setupSwagger = require('./config/swagger');
 require('./middleware/authenticationMiddleware');
 
 require('./database');
 app.use(express.json());
+
+setupSwagger(app);
 
 app.use(bodyParser.json());
 app.use(passport.initialize());
