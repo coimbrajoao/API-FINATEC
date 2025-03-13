@@ -2,7 +2,7 @@ const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const { Strategy, ExtractJwt } = passportJWT;
 require('dotenv').config();
-const User = require('../models/User');
+const User = require('../models/user');
 const { admin } = require('./adminMiddleware');
 
 
