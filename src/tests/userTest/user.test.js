@@ -4,8 +4,10 @@ const connection = require('../../database/index');
 const { cpf } = require('cpf-cnpj-validator');
 const { admin } = require('../../middleware/adminMiddleware');
 
-let token;
+let tokenUpdated;
+let adminTokem;
 jest.setTimeout(20000);
+
 
 beforeAll(async () => {
     await connection.sync({ force: true });
@@ -16,7 +18,7 @@ beforeAll(async () => {
             email: 'testelogin@example.com',
             password: 'password',
             confirmedPassword: 'password',
-            admin: true,
+            admin: false,
             cpf: cpf.generate() // Gera um CPF aleatório
         });
     expect(response.status).toBe(201);
@@ -29,11 +31,11 @@ beforeAll(async () => {
         });
     expect(loginresponse.status).toBe(200);
     expect(loginresponse.body).toHaveProperty('token');
-    token = loginresponse.body.token;
+    tokenUpdated = loginresponse.body.token;
 
     const updateResponse = await request(app)
         .put('/users/1')
-        .set('Authorization', `Bearer ${token}`)
+        .set('Authorization', `Bearer ${tokenUpdated}`)
         .send({
             admin: true
         })
@@ -48,7 +50,7 @@ beforeAll(async () => {
     expect(userResponse.status).toBe(200);
     expect(userResponse.body).toHaveProperty('token');
 
-    token = userResponse.body.token;
+    adminTokem = userResponse.body.token;
 
 });
 
@@ -59,7 +61,7 @@ describe('User', () => {
     it('should update user by id', async () => {
         const response = await request(app)
             .put('/users/1')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${adminTokem}`)
             .send({
                 name: 'Test',
                 email: 'OQd8o@examplekoko.com',
@@ -75,7 +77,7 @@ describe('User', () => {
     it('should crete a new user with admin false', async () => {
         const response = await request(app)
             .post('/users/')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${adminTokem}`)
             .send({
                 name: 'Test',
                 email: 'teste@example.com',
@@ -92,7 +94,7 @@ describe('User', () => {
     it('should not create a new user with the same email', async () => {
         const response = await request(app)
             .post('/users/')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${adminTokem}`)
             .send({
                 name: 'Test',
                 email: 'teste@example.com',
@@ -109,7 +111,7 @@ describe('User', () => {
     it('should get all users', async () => {
         const response = await request(app)
             .get('/users/')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${adminTokem}`)
             .query({ page: 1, limit: 10 });
 
         expect(response.status).toBe(200);
@@ -131,7 +133,7 @@ describe('User', () => {
     it('should not get all users', async () => {
         const response = await request(app)
             .get('/users/')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${adminTokem}`)
             .query({ page: 'abc', limit: 10 });
 
         expect(response.status).toBe(400);
@@ -142,7 +144,7 @@ describe('User', () => {
     it('should get user by id', async () => {
         const response = await request(app)
             .get('/users/1')
-            .set('Authorization', `Bearer ${token}`);
+            .set('Authorization', `Bearer ${adminTokem}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('id');
@@ -155,7 +157,7 @@ describe('User', () => {
     it('should not get user by id', async () => {
         const response = await request(app)
             .get('/users/999')
-            .set('Authorization', `Bearer ${token}`);
+            .set('Authorization', `Bearer ${adminTokem}`);
 
         expect(response.status).toBe(404);
         expect(response.body.error).toBe('User not found');
@@ -164,7 +166,7 @@ describe('User', () => {
     it('should not delete user by id', async () => {
         const response = await request(app)
             .delete('/users/999')
-            .set('Authorization', `Bearer ${token}`);
+            .set('Authorization', `Bearer ${adminTokem}`);
 
         expect(response.status).toBe(404);
         expect(response.body.error).toBe('User not found');

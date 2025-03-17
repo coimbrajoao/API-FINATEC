@@ -17,7 +17,7 @@ exports.post = async (req, res) => {
         }
 
         const newCategory = await repository.create({ name, description });
-        return res.status(201).json(newCategory);
+        return res.status(201).json({ message: "Category created successfully" });
 
     } catch (err) {
         console.log(err);
@@ -92,7 +92,7 @@ exports.put = async (req, res) => {
         if (name) updatedFields.name = name;
         if (description) updatedFields.description = description;
 
-        const updatedCategory = await repository.update(id, updatedFields);
+        await repository.update(id, updatedFields);
         return res.status(200).json({ message: "Category updated successfully" });
 
     } catch (err) {
@@ -104,7 +104,6 @@ exports.put = async (req, res) => {
 exports.delete = async (req, res) => {
     const { id } = req.params;
 
-
     try {
         existsOrError(id, "The field id is required");
 
@@ -114,7 +113,7 @@ exports.delete = async (req, res) => {
             return res.status(404).json({ error: "Category not found" });
         }
 
-        const deletedCategory = await repository.delete(id);
+        await repository.delete(id);
         return res.status(200).json({ message: "Category deleted successfully" });
 
     } catch (err) {

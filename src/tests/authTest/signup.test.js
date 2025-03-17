@@ -1,9 +1,12 @@
 const request = require('supertest');
 const app = require('../../app');
 const connection = require('../../database/index');
-const {cpf} = require('cpf-cnpj-validator');
+const { cpf } = require('cpf-cnpj-validator');
+
+jest.setTimeout(20000); // Aumenta o timeout para 20 segundos
 
 describe('Signup', () => {
+    
 
     it('should create a new user registered successfully', async () => {
         const response = await request(app)
@@ -13,10 +16,10 @@ describe('Signup', () => {
                 email: 'OQd8o@example.com',
                 password: 'password',
                 confirmedPassword: 'password',
-                admin: true,
-                cpf: cpf.generate() // Gera um CPF aleatório
+                admin: false,
+                cpf: cpf.generate()
             });
-        
+
         expect(response.status).toBe(201);
         expect(response.body.message).toBe('User created successfully');
     });
@@ -30,7 +33,7 @@ describe('Signup', () => {
                 password: 'password',
                 confirmedPassword: 'password',
                 admin: false,
-                cpf: cpf.generate() // Gera um CPF aleatório
+                cpf: cpf.generate()
             });
 
         expect(response.status).toBe(400);
@@ -44,15 +47,12 @@ describe('Signup', () => {
                 email: 'OQd8o@example.com',
                 password: 'password'
             });
-        console.log(response.body);
+
         expect(response.status).toBe(200);
         expect(response.body.message).toBe('Login successful');
-
     });
 
+    afterAll(async () => {
+        await connection.close();
+    });
 });
-
-afterAll(async () => {
-    // Feche a conexão com o banco de dados ou outras operações assíncronas
-    await connection.close();
-  });
