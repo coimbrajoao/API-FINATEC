@@ -103,8 +103,65 @@ components:
       properties:
         message:
           type: string
-      example:
-        message: "Usuário não encontrado"
+      examples:
+        example1:
+          value:
+            message: "Usuário já cadastrado"
+        example2:
+          value:
+            message: "Usuário não encontrado"
+        example3:
+          value:
+            message: "Categoria já cadastrada"
+        example4:
+          value:
+            message: "Categoria não encontrada"
+        example5:
+          value:
+            message: "Os campos 'name' e 'description' são obrigatórios"
+        example6:
+          value:
+            message: "Erro interno do servidor"
+        example7:
+          value:
+            message: "Não autorizado"
+        example8:
+          value:
+            message: "Credenciais inválidas"
+        example9:
+          value:
+            message: "Senha e confirmação de senha não coincidem"
+        example10:
+          value:
+            message: "CPF inválido"
+
+    Success:
+      type: object
+      properties:
+        message:
+          type: string
+      examples:
+        example1:
+          value:
+            message: "Categoria cadastrada com sucesso"
+        example2:
+          value:
+            message: "Categoria atualizada com sucesso"
+        example3:
+          value:
+            message: "Categoria deletada com sucesso"
+        example4:
+          value:
+            message: "Usuário cadastrado com sucesso"
+        example5:
+          value:
+            message: "Usuário atualizado com sucesso"
+        example6:
+          value:
+            message: "Usuário deletado com sucesso"
+        example7:
+          value:
+            message: "Login efetuado com sucesso"
 
 tags:
   - name: "Auth"
@@ -127,15 +184,6 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/User"
-            examples:
-              example1:
-                value:
-                  name: "João"
-                  email: "joao@example.com"
-                  password: "123456"
-                  confirmedPassword: "123456"
-                  admin: false
-                  cpf: "123.456.789-00"
       responses:
         "201":
           description: "Usuário cadastrado com sucesso"
@@ -144,17 +192,38 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
         "400":
-          description: "Usuário já cadastrado ou dados inválidos"
+          description: "Dados inválidos"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Senha e confirmação de senha não coincidem"
+                example2:
+                  value:
+                    message: "CPF inválido"
+        "409":
+          description: "Usuário já cadastrado"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Usuário já cadastrado"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
   /auth:
     post:
@@ -168,11 +237,6 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/Login"
-            examples:
-              example1:
-                value:
-                  email: "joao@example.com"
-                  password: "123456"
       responses:
         "200":
           description: "Login efetuado com sucesso"
@@ -186,12 +250,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Credenciais inválidas"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
   /users:
     get:
@@ -231,12 +303,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Não autorizado"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
     post:
       summary: "Cadastrar usuário"
@@ -251,15 +331,6 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/User"
-            examples:
-              example1:
-                value:
-                  name: "João"
-                  email: "joao@example.com"
-                  password: "123456"
-                  confirmedPassword: "123456"
-                  admin: false
-                  cpf: "123.456.789-00"
       responses:
         "201":
           description: "Usuário cadastrado com sucesso"
@@ -268,17 +339,38 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
         "400":
-          description: "Usuário já cadastrado ou dados inválidos"
+          description: "Dados inválidos"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Senha e confirmação de senha não coincidem"
+                example2:
+                  value:
+                    message: "CPF inválido"
+        "409":
+          description: "Usuário já cadastrado"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Usuário já cadastrado"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
   /users/{id}:
     get:
@@ -308,12 +400,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Usuário não encontrado"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
     put:
       summary: "Atualizar usuário"
@@ -344,18 +444,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Senha e confirmação de senha não coincidem"
+                example2:
+                  value:
+                    message: "CPF inválido"
         "404":
           description: "Usuário não encontrado"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Usuário não encontrado"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
     delete:
       summary: "Deletar usuário"
@@ -372,7 +487,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        "204":
           description: "Usuário deletado com sucesso"
         "404":
           description: "Usuário não encontrado"
@@ -380,12 +495,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Usuário não encontrado"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
   /category:
     get:
@@ -425,12 +548,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Não autorizado"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
     post:
       summary: "Cadastrar categoria"
@@ -445,30 +576,43 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/Category"
-            examples:
-              example1:
-                value:
-                  name: "Alimentação"
-                  description: "Categoria de alimentação"
       responses:
         "201":
           description: "Categoria cadastrada com sucesso"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Category"
+                $ref: "#/components/schemas/Success"
+        "400":
+          description: "Dados inválidos"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Os campos 'name' e 'description' são obrigatórios"
         "409":
           description: "Categoria já cadastrada"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Categoria já cadastrada"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
   /category/{id}:
     get:
@@ -498,12 +642,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Categoria não encontrada"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
     put:
       summary: "Atualizar categoria"
@@ -512,11 +664,11 @@ paths:
         - "Category"
       security:
         - bearerAuth: []
-      parameters: 
+      parameters:
         - name: id
           in: path
           required: true
-          description: "ID da categoria"  
+          description: "ID da categoria"
           schema:
             type: integer
       requestBody:
@@ -534,23 +686,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Os campos 'name' e 'description' são obrigatórios"
         "404":
           description: "Categoria não encontrada"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Categoria não encontrada"
         "500":
           description: "Erro interno do servidor"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
 
     delete:
       summary: "Deletar categoria"
       description: "Deleta uma categoria pelo ID"
       tags:
+        - "Category"
         - "Category"
       security:
         - bearerAuth: []
@@ -562,7 +727,7 @@ paths:
           schema:
             type: integer
       responses:
-        "200":
+        "204":
           description: "Categoria deletada com sucesso"
         "404":
           description: "Categoria não encontrada"
@@ -570,3 +735,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Categoria não encontrada"
+        "500":
+          description: "Erro interno do servidor"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"
+                  
