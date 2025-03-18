@@ -30,10 +30,9 @@ exports.get = async (req, res) => {
     const offset = (page - 1) * parseInt(limit);
 
     try {
-        // Supondo que o método getAll do repositório aceita `limit` e `offset`
+       
         const categories = await repository.getAll(limit, offset);
 
-        // Contar o total de categorias para calcular o total de páginas
         const totalCategories = await repository.countAll();
         const totalPages = Math.ceil(totalCategories / parseInt(limit));
 

@@ -16,12 +16,10 @@ class UserRepository {
     async GetAllUsers(offset, limit) {
         const parsedOffset = Number(offset) || 0;
         const parsedLimit = Number(limit) || 10; // Define um valor padrão
-        return await User.findAndCountAll({
-            where: { deletedAt: null },
-            offset: parsedOffset,
-            limit: parsedLimit
-        });
+        const ofset =(parsedOffset - 1) * parsedLimit;
+        return await User.findAndCountAll({ where: { deletedAt: null }, offset: ofset, limit: parsedLimit });
     }
+
     async GetUserById(id) {
         return (await User.findByPk(id));
     }
@@ -29,10 +27,6 @@ class UserRepository {
     async UpdateUser(id, updatedFields) {
         console.log(updatedFields, id);
         return await User.update(updatedFields, { where: { id: id } });
-    }
-
-    async DeleteUser() {
-        return await User.destroy();
     }
 
 }

@@ -84,6 +84,33 @@ describe('Category', () => {
         expect(response.status).toBe(200);
     });
 
+    it('should return a specific category', async () => {
+        const response = await request(app)
+            .get('/category/1')
+            .set('Authorization', `Bearer ${userToken}`);
+        expect(response.status).toBe(200);
+    });
+
+    it('should update a category (admin only)', async () => {
+        const response = await request(app)
+            .put('/category/1')
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({
+                name: 'Updated Category',
+                description: 'This is an updated category'
+            });
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe('Category updated successfully');
+    });
+
+    it('should delete a category (admin only)', async () => {
+        const response = await request(app)
+            .delete('/category/1')
+            .set('Authorization', `Bearer ${adminToken}`);
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe('Category deleted successfully');
+    });
+
 });
 
 afterAll(async () => {
