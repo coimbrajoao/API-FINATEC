@@ -47,6 +47,9 @@ exports.getById = async (req, res) => {
         if (err.message === "User not found") {
             return res.status(404).json({ error: "User not found" });
         }
+        if(err.message === "The field id is required") {
+            return res.status(400).json({ error: "The field id is required" });
+        }
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
