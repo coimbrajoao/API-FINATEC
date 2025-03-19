@@ -54,7 +54,6 @@ exports.getById = async (req, res) => {
     }
 }
 
-
 exports.getAll = async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     try {

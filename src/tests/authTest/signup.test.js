@@ -36,8 +36,8 @@ describe('Signup', () => {
                 cpf: cpf.generate()
             });
 
-        expect(response.status).toBe(400);
-        expect(response.body.error).toBe('Email already exists');
+        expect(response.status).toBe(409);
+        expect(response.body.error).toBe('Email already registered');
     });
 
     it('should login successfully', async () => {

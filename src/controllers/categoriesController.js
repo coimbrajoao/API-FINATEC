@@ -1,26 +1,20 @@
 const repository = require('../repository/categorieRepository');
 const { existsOrError, } = require('../validation/validation');
-
+const CategoryService = require('../services/categoryService');
+const categoryService = new CategoryService();
 
 exports.post = async (req, res) => {
     const { name, description } = req.body;
 
     try {
-        const fields = { name, description };
-        for (const field in fields) {
-            existsOrError(fields[field], `The field ${field} is required`);
-        }
-
-        const category = await repository.getByName(name);
-        if (category) {
+        const category = await categoryService.create({ name, description });
+        return res.status(201).json({ message: "Category created successfully", category });
+    } catch (err) {
+     
+        console.log(err);
+        if (err.message === "Category already exists") {
             return res.status(409).json({ error: "Category already exists" });
         }
-
-        const newCategory = await repository.create({ name, description });
-        return res.status(201).json({ message: "Category created successfully" });
-
-    } catch (err) {
-        console.log(err);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
@@ -30,22 +24,8 @@ exports.get = async (req, res) => {
     const offset = (page - 1) * parseInt(limit);
 
     try {
-       
-        const categories = await repository.getAll(limit, offset);
-
-        const totalCategories = await repository.countAll();
-        const totalPages = Math.ceil(totalCategories / parseInt(limit));
-
-        return res.status(200).json({
-            categories,
-            pagination: {
-                page: parseInt(page),
-                limit: parseInt(limit),
-                offset,
-                totalItems: totalCategories,
-                totalPages,
-            },
-        });
+        const result = await categoryService.getAll(limit, offset);
+        return res.status(200).json(result);
     } catch (err) {
         console.log(err);
         return res.status(500).json({ error: "Internal Server Error" });
@@ -56,21 +36,15 @@ exports.getById = async (req, res) => {
     const { id } = req.params;
 
     try {
-
-        existsOrError(id, "The field id is required");
-        const category = await repository.getById(id);
-
-        if (!category) {
-            return res.status(404).json({ error: "Category not found" });
-        }
-
+        const category = await categoryService.getById(id);
         return res.status(200).json(category);
-
     } catch (err) {
         console.log(err);
+        if (err.message === "Category not found") {
+            return res.status(404).json({ error: "Category not found" });
+        }
         return res.status(500).json({ error: "Internal Server Error" });
     }
-
 };
 
 exports.put = async (req, res) => {
@@ -80,21 +54,13 @@ exports.put = async (req, res) => {
     try {
 
         existsOrError(id, "The field id is required");
-
-        const getCategory = await repository.getById(id);
-
-        if (!getCategory) {
+        
+        await categoryService.update(id, { name, description });
+        return res.status(200).json({ message: "Category updated successfully" });
+    } catch (err) {
+        if (err.message === "Category not found") {
             return res.status(404).json({ error: "Category not found" });
         }
-
-        const updatedFields = {};
-        if (name) updatedFields.name = name;
-        if (description) updatedFields.description = description;
-
-        await repository.update(id, updatedFields);
-        return res.status(200).json({ message: "Category updated successfully" });
-
-    } catch (err) {
         console.log(err);
         return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -106,16 +72,13 @@ exports.delete = async (req, res) => {
     try {
         existsOrError(id, "The field id is required");
 
-        const getCategory = await repository.getById(id);
-
-        if (!getCategory) {
-            return res.status(404).json({ error: "Category not found" });
-        }
-
-        await repository.delete(id);
+        await categoryService.delete(id);
         return res.status(200).json({ message: "Category deleted successfully" });
 
     } catch (err) {
+        if (err.message === "Category not found") {
+            return res.status(404).json({ error: "Category not found" });
+        }
         console.log(err);
         return res.status(500).json({ error: "Internal Server Error" });
     }
