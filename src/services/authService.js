@@ -3,13 +3,18 @@ const bcrypt = require('bcrypt');
 const repository = require('../repository/userRepository');
 require('dotenv').config();
 
-const generateToken = (user) => {
-    const payload = { id: user.id, email: user.email, admin: user.admin, iat: Math.floor(Date.now() / 1000) - 30, exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24) };
-    return jwt.encode(payload, process.env.authSecret);
-}
 
 class authService {
-
+    static generateToken = (user) => {
+        const payload = { 
+            id: user.id, 
+            email: user.email, 
+            admin: user.admin, 
+            iat: Math.floor(Date.now() / 1000), 
+            exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24) 
+        };
+        return jwt.encode(payload, process.env.authSecret);
+    }
     async login(email, password) {
 
         const user = await repository.GetUserByEmail(email);
@@ -20,7 +25,7 @@ class authService {
         if (!isMatch) {
             throw new Error("Invalid password");
         }
-        const token = generateToken(user);
+        const token = authService.generateToken(user);
         return token;
 
     }
