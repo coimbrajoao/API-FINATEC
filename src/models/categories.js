@@ -10,6 +10,10 @@ class categories extends Model {
             sequelize
         });
     }
+
+    static associate(models) {
+        this.hasMany(models.transaction, {foreignKey: 'category_id', as: 'transactions'});
+    }
 }
 
 module.exports = categories;

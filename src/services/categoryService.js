@@ -61,6 +61,13 @@ class CategoryService {
         }
         return category;
     }
+    async getByName(name) {
+        const category = await repository.getByName(name);
+        if (!category) {
+            throw new Error("Category not found");
+        }
+        return category;
+    }
 }
 
 module.exports = CategoryService;

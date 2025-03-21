@@ -97,6 +97,38 @@ components:
       example:
         name: "Alimentação"
         description: "Categoria de alimentação"
+    
+    transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          maxLength: 255
+        value:
+          type: number
+        date:
+          type: string
+          format: date
+        category:
+          type: integer
+      required:
+        - name
+        - description
+        - value
+        - date
+        - category
+      example:
+        name: "Almoço"
+        description: "Almoço no restaurante"
+        value: 20.00
+        date: "2021-10-10"
+        category: "1"
 
     Error:
       type: object
@@ -170,6 +202,8 @@ tags:
     description: "Operações de gerenciamento de usuários"
   - name: "Category"
     description: "Operações de gerenciamento de categorias"
+  - name: "Transaction"
+    description: "Operações de gerenciamento de transações"
 
 paths:
   /auth/signup:
@@ -749,4 +783,45 @@ paths:
                 example1:
                   value:
                     message: "Erro interno do servidor"
-                  
+
+  /transaction/:
+    post:
+      summary: "Cadastrar transação"
+      description: "Registra uma nova transação"
+      tags:
+        - "Transaction"
+      security:
+         - bearerAuth: []
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/transaction"
+      responses:
+          "201":
+            description: "Transação cadastrada com sucesso"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/transaction"
+          "400":
+            description: "Dados inválidos"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Os campos 'name', 'description', 'value', 'date' e 'category' são obrigatórios"
+          "500":
+            description: "Erro interno do servidor"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+              examples:
+                example1:
+                  value:
+                    message: "Erro interno do servidor"

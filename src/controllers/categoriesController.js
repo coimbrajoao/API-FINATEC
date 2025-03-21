@@ -1,4 +1,3 @@
-const repository = require('../repository/categorieRepository');
 const { existsOrError, } = require('../validation/validation');
 const CategoryService = require('../services/categoryService');
 const categoryService = new CategoryService();

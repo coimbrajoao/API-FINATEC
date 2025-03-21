@@ -1,7 +1,4 @@
-const encryptPassword = require('../services/encryptPassword');
-const repository = require('../repository/userRepository');
-const { existsOrError, validateEmail } = require('../validation/validation');
-const { parse } = require('dotenv');
+
 const UserService = require('../services/userService');
 const userService = new UserService();
 

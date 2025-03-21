@@ -18,6 +18,9 @@ class User extends Model {
             paranoid: true
         });
     }
+    static associate(models) {
+        this.hasMany(models.transaction, {foreignKey: 'user_id', as: 'transactions'});
+    }
 }
 
 module.exports = User;
