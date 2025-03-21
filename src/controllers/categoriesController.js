@@ -1,4 +1,4 @@
-const { existsOrError, } = require('../validation/validation');
+const { existsOrError, } = require('../utils/validation/validation');
 const CategoryService = require('../services/categoryService');
 const categoryService = new CategoryService();
 

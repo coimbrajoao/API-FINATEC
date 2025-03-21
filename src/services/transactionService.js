@@ -1,7 +1,7 @@
 const repository = require('../repository/transactionRepository');
 const CategoryService = require('./categoryService');
 const categoryService = new CategoryService();
-const {existsOrError, notExistsOrError, equalsOrError } = require('../validation/validation');
+const {existsOrError, notExistsOrError, equalsOrError } = require('../utils/validation/validation');
 
 
 class transactionService{
@@ -9,10 +9,10 @@ class transactionService{
     async createTransaction(transactionData){
         const {value, description, type, category, user_id} = transactionData;
         try{
-             const fiels = {value, description, type, category, user_id};
+             const fields = {value, description, type, category, user_id};
 
-            for(const field in fiels){
-                existsOrError(fiels[field], `The field ${field} is required`);  
+            for(const field in fields){
+                existsOrError(fields[field], `The field ${field} is required`);  
             }
 
             if(type !== 'credit' && type !== 'debit'){
@@ -36,7 +36,7 @@ class transactionService{
         }
     }
 
-    
+
 
 }
 

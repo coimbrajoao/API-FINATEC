@@ -1,6 +1,6 @@
 const encryptPassword = require('../services/encryptPassword');
 const repository = require('../repository/userRepository');
-const { existsOrError, validateEmail } = require('../validation/validation');
+const { existsOrError, validateEmail } = require('../utils/validation/validation');
 
 
 class UserService {

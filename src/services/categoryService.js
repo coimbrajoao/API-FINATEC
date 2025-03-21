@@ -1,5 +1,5 @@
 const repository = require('../repository/categorieRepository');
-const { existsOrError, } = require('../validation/validation');
+const { existsOrError, } = require('../utils/validation/validation');
 
 
 class CategoryService {
